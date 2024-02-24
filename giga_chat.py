@@ -2,6 +2,17 @@ import requests
 import uuid
 import json
 
+menu = {    'apple_pie': 'яблочный пирог',
+    'caesar_salad': 'салат "Цезарь"',    'caprese_salad': 'салат "Капрезе"',
+    'carrot_cake': 'морковный пирог',    'cheesecake': 'чизкейк',
+    'chicken_curry': 'куриное карри',    'chocolate_cake': 'шоколадный пирог',
+    'chocolate_mousse': 'шоколадный мусс',    'donuts': 'пончики',
+    'dumplings': 'пельмени',    'eggs_benedict': 'яичница по-бенедиктински',
+    'greek_salad': 'греческий салат',    'lasagna': 'лазанья',
+    'pancakes': 'блины',    'panna_cotta': 'панна котта',
+    'peking_duck': 'утка по-пекински',    'pizza': 'пицца',
+    'ramen': 'рамен',    'risotto': 'ризотто',
+    'waffles': 'вафли'}
 def gigachat(predicted_class):
 
     url = "https://ngw.devices.sberbank.ru:9443/api/v2/oauth"
@@ -27,7 +38,7 @@ def gigachat(predicted_class):
         "messages": [
             {
                 "role": "user",
-                "content": "Make a text of recipe in russian for " + predicted_class
+                "content": "Напиши рецепт с ингридиентами и пошаговой инструкцией для " + menu[predicted_class]
             }
         ],
         "temperature": 1,
@@ -45,4 +56,4 @@ def gigachat(predicted_class):
 
     response = requests.request("POST", url, headers=headers, data=payload, verify=False)
 
-    return (response.text)
+    return (json.loads(response.text)["choices"][0]["message"]["content"])

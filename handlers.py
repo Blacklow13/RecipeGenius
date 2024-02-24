@@ -4,6 +4,20 @@ from utils import messages, utils
 from bot.states import States
 from model.predictor import MyModel
 from giga_chat import gigachat
+import os
+
+menu = {    'apple_pie': 'яблочный пирог',
+    'caesar_salad': 'салат "Цезарь"',    'caprese_salad': 'салат "Капрезе"',
+    'carrot_cake': 'морковный пирог',    'cheesecake': 'чизкейк',
+    'chicken_curry': 'куриное карри',    'chocolate_cake': 'шоколадный пирог',
+    'chocolate_mousse': 'шоколадный мусс',    'donuts': 'пончики',
+    'dumplings': 'пельмени',    'eggs_benedict': 'яичница по-бенедиктински',
+    'greek_salad': 'греческий салат',    'lasagna': 'лазанья',
+    'pancakes': 'блины',    'panna_cotta': 'панна котта',
+    'peking_duck': 'утка по-пекински',    'pizza': 'пицца',
+    'ramen': 'рамен',    'risotto': 'ризотто',
+    'waffles': 'вафли'}
+
 
 async def welcome(msg: types.Message):
     await States.work.set()
@@ -11,7 +25,7 @@ async def welcome(msg: types.Message):
 
 async def new_start(msg: types.Message):
     await States.work.set()
-    await msg.answer(messages.start,reply_markup=utils.form_reply_keyboard(["Загрузить ещё одну картинку"]))
+    await msg.answer(messages.re_start,reply_markup=utils.form_reply_keyboard(["Загрузить ещё одну картинку"]))
 async def image_handler(msg: types.Message, state: FSMContext):
 
     images = msg.photo
@@ -32,7 +46,9 @@ async def image_handler(msg: types.Message, state: FSMContext):
 
     prediction = model(path)
 
-    await msg.reply(messages.prediction.format(prediction+gigachat(prediction)))
+    os.remove(path)
+
+    await msg.reply(messages.prediction.format(menu[prediction]+"\n"+gigachat(prediction)))
     await new_start(msg)
 
 
